@@ -1,0 +1,16 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+form {
+    width: 500px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    box-sizing: border-box;
+}
