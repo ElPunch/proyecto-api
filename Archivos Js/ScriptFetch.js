@@ -1,32 +1,4 @@
-/*fetchData();
-
-async function fetchData(){
-    try{
-
-        const NombreHeroe = document.getElementById("NombreHeroe").value.toLowerCase();
-        
-        const response = await fetch (`https://superheroapi.com/api.php/5cbbe2217a57e86e8968274677c361c0/search/${NombreHeroe}`);
-
-        if(!response.ok){
-            throw new Error("No se pudo consumir el recurso");
-        }
-
-        const data = await response.json();
-       
-        const imagenHeroe = data.results[0].image.url;
-        const imagen = document.getElementById("ImagenHeroe");
-
-        imagen.src = imagenHeroe;
-        imagen.style.display = "block";
-        console.log(data);
-    
-    }
-    catch(error){
-        console.error(error);
-    }
-}
-*/
-
+//Funcion para listar y mostrar todos los heroes 
 const listaHeroes = document.querySelector("#listaHeroes");
 const botonesHeader = document.querySelector(".btn-header")
 let URL = "https://superheroapi.com/api.php/5cbbe2217a57e86e8968274677c361c0/";
@@ -68,26 +40,102 @@ function MostrarHeroe(data){
             </div>
         </div>
     `;
-    listaheroe.append(div);
+    listaHeroes.append(div);
 }
 
-botonesHeader.forEach(boton => 
-    boton.addEventListener("click", (event) => {
-        const editorialSeleccionada = event.currentTarget.id; // Ej: "Marvel Comics"
+//funcion del buscador
+const btnBuscar = document.getElementById("btnBuscar");
+const inputHeroe = document.getElementById("NombreHeroe");
 
-        for (let i = 1; i <= 731; i++) {
-            fetch(URL + i)
-                .then((response) => response.json())
-                .then(data => {
-                    // Validamos que el campo publisher exista
-                    if (data.biography && data.biography.publisher === editorialSeleccionada) {
-                        // Aquí puedes mostrar los héroes en pantalla o hacer console.log
-                        console.log(data.name); // Muestra el nombre del héroe
-                        // Llama a tu función para mostrar el héroe en el HTML
-                        // mostrarHeroe(data);
-                    }
-                })
-                .catch(error => console.error("Error al cargar héroe: ", error));
+btnBuscar.addEventListener("click", buscarHeroe);
+
+inputHeroe.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        buscarHeroe();
+    }
+});
+
+function limpiarResultado() {
+    listaHeroes.innerHTML = "";
+}
+
+async function buscarHeroe() {
+    const nombre = inputHeroe.value.trim().toLowerCase();
+    if (!nombre) return;
+
+    const url = `https://superheroapi.com/api.php/5cbbe2217a57e86e8968274677c361c0/search/${nombre}`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        limpiarResultado();
+
+        if (data.response === "success" && data.results.length > 0) {
+            data.results.forEach(hero => MostrarHeroe(hero));
+        } else {
+            listaHeroes.innerHTML = "<p>No se encontró el héroe.</p>";
         }
-    })
-);
+    } catch (err) {
+        console.error("Error al buscar el héroe:", err);
+        listaHeroes.innerHTML = "<p>Error al buscar el héroe.</p>";
+    }
+}
+
+
+function limpiarResultado() {
+    listaHeroes.innerHTML = "";
+}
+
+function cargarHeroesFiltrados(filtroCallback) {
+    limpiarResultado();
+    for (let i = 1; i <= 731; i++) {
+        fetch(`https://superheroapi.com/api.php/5cbbe2217a57e86e8968274677c361c0/${i}`)
+            .then(res => res.json())
+            .then(data => {
+                if (filtroCallback(data)) {
+                    MostrarHeroe(data);
+                }
+            })
+            .catch(err => console.error("Error al cargar héroe:", err));
+    }
+}
+
+// Ver todos
+document.getElementById("ver-todos").addEventListener("click", () => {
+    cargarHeroesFiltrados(() => true); // muestra todos
+});
+
+// Marvel
+document.getElementById("Marvel Comics").addEventListener("click", () => {
+    cargarHeroesFiltrados(data => data.biography.publisher === "Marvel Comics");
+});
+
+// DC
+document.getElementById("dc").addEventListener("click", () => {
+    cargarHeroesFiltrados(data => data.biography.publisher === "DC Comics");
+});
+
+// Image Comics
+document.getElementById("image").addEventListener("click", () => {
+    cargarHeroesFiltrados(data => data.biography.publisher === "Image Comics");
+});
+
+// Dark Horse Comics
+document.getElementById("darkhorse").addEventListener("click", () => {
+    cargarHeroesFiltrados(data => data.biography.publisher === "Dark Horse Comics");
+});
+
+// Héroes (alignment: good)
+document.getElementById("good").addEventListener("click", () => {
+    cargarHeroesFiltrados(data => data.biography.alignment === "good");
+});
+
+// Villanos (alignment: bad)
+document.getElementById("bad").addEventListener("click", () => {
+    cargarHeroesFiltrados(data => data.biography.alignment === "bad");
+});
+
+// Antihéroes (alignment: neutral)
+document.getElementById("antihero").addEventListener("click", () => {
+    cargarHeroesFiltrados(data => data.biography.alignment === "neutral");
+});

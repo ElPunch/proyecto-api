@@ -21,18 +21,17 @@
             </ul>
             <div class="search-container">
                 <input type="text" id="NombreHeroe" placeholder="Introduzca el héroe">
-                <button onclick="fetchData()">Buscar</button>
+                <button id="btnBuscar">Buscar</button>
             </div>
         </nav>
 
     </header>
-    <img src="" alt="imagen heroe" id="ImagenHeroe" style="display: none;">
-    
+    <div id="resultadoBusqueda"></div>
 </body>
 
 <main>
     <div id="todos">
-        <div class="heroes_todos" id="listaheroe">
+        <div class="heroes_todos" id="listaHeroes">
             <!-- <div class="heroico">
                 <div class="Imagen_Heroe">
                     <img src="https://www.superherodb.com/pictures2/portraits/10/100/10441.jpg" alt="Batman">

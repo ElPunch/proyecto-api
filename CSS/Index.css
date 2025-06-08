@@ -213,7 +213,7 @@ main {
     border-radius: 100vmax;
 }
 
-.antihero {
+.neutral {
     background-color: var(--align-antihero);
     color: var(--clr-black);
     padding: .25rem .5rem;
