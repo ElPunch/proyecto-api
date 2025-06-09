@@ -81,7 +81,7 @@ async function buscarHeroe() {
     }
 }
 
-
+//funciones de botones 
 function limpiarResultado() {
     listaHeroes.innerHTML = "";
 }
